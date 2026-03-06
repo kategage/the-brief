@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Brief</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --warm-white: #FAF7F2;
+    --ink: #1A1714;
+    --ink-light: #4A4540;
+    --ink-faint: #9A9590;
+    --rust: #C4541A;
+    --gold: #B8962E;
+    --sage: #5A7A5A;
+    --border: rgba(26,23,20,0.12);
+    --border-strong: rgba(26,23,20,0.25);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  /* MASTHEAD */
+  .masthead {
+    background: var(--ink);
+    color: var(--cream);
+    text-align: center;
+    padding: 28px 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .masthead::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(255,255,255,0.015) 40px,
+      rgba(255,255,255,0.015) 41px
+    );
+  }
+  .masthead-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: rgba(245,240,232,0.5);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .masthead-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .masthead-tagline {
+    font-family: 'Crimson Pro', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(245,240,232,0.55);
+    letter-spacing: 0.05em;
+  }
+  /* TICKER */
+  .ticker-wrap {
+    background: var(--rust);
+    overflow: hidden;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
+  }
+  .ticker-inner {
+    display: flex;
+    animation: ticker 30s linear infinite;
+    white-space: nowrap;
+  }
+  .ticker-inner span {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    color: #fff;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 40px;
+  }
+  .ticker-sep {
+    color: rgba(255,255,255,0.4);
+    padding: 0 4px;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  /* LAYOUT */
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+  /* WEATHER + MOOD BAR */
+  .context-bar {
+    border-bottom: 1px solid var(--border);
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .context-item strong {
+    color: var(--ink-light);
+  }
+  .context-bar .location-tag {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .mood-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sage);
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+  /* MAIN GRID */
+  .main-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+  }
+  /* LEFT COL */
+  .left-col {
+    border-right: 1px solid var(--border);
+    padding: 32px 32px 32px 0;
+  }
+  /* SECTION LABELS */
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  /* LEAD STORY */
+  .lead-story {
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lead-category {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 10px;
+  }
+  .lead-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .lead-headline:hover { color: var(--rust); }
+  .lead-deck {
+    font-size: 17px;
+    font-style: italic;
+    color: var(--ink-light);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+  .lead-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+  }
+  .lead-meta .source { color: var(--ink-light); font-weight: 400; }
+  .contact-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3px 10px 3px 8px;
+    border-radius: 2px;
+    font-size: 9px;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-transform: uppercase;
+  }
+  .contact-pill:hover { background: var(--rust); }
+  .contact-pill::before { content: '→ '; }
+  /* STORY CARDS */
+  .story-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .story-card {}
+  .story-cat {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding: 2px 6px;
+    display: inline-block;
+    border-radius: 1px;
+  }
+  .cat-culture { color: var(--rust); background: rgba(196,84,26,0.08); }
+  .cat-business { color: var(--sage); background: rgba(90,122,90,0.08); }
+  .cat-tech { color: var(--gold); background: rgba(184,150,46,0.08); }
+  .cat-society { color: #7A5A8A; background: rgba(122,90,138,0.08); }
+  .story-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .story-headline:hover { color: var(--rust); }
+  .story-body {
+    font-size: 14.5px;
+    color: var(--ink-light);
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+  .story-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+  }
+  /* SIGNAL SECTION */
+  .signal-section {
+    margin-bottom: 0;
+  }
+  .signal-item {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+    cursor: pointer;
+    transition: background 0.15s;
+    margin: 0 -8px;
+    padding-left: 8px;
+    padding-right: 8px;
+    border-radius: 2px;
+  }
+  .signal-item:hover { background: rgba(26,23,20,0.03); }
+  .signal-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--border-strong);
+    line-height: 1;
+    min-width: 28px;
+    padding-top: 2px;
+  }
+  .signal-content {}
+  .signal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .signal-blurb {
+    font-size: 13.5px;
+    color: var(--ink-light);
+    line-height: 1.5;
+  }
+  .signal-src {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+  }
+  /* RIGHT COL */
+  .right-col {
+    padding: 32px 0 32px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  /* TEMPERATURE */
+  .temp-block {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 20px;
+    border-radius: 2px;
+  }
+  .temp-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(245,240,232,0.45);
+    margin-bottom: 12px;
+  }
+  .temp-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .temp-item:last-child { border-bottom: none; }
+  .temp-topic {
+    font-family: 'Crimson Pro', serif;
+    font-size: 15px;
+    color: rgba(245,240,232,0.85);
+  }
+  .temp-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .temp-bar {
+    width: 60px;
+    height: 3px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .temp-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--rust));
+  }
+  .temp-pct {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.4);
+    width: 28px;
+    text-align: right;
+  }
+  /* CONTACTS BLOCK */
+  .contacts-block {}
+  .contact-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .contact-card:hover { opacity: 0.7; }
+  .contact-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: var(--cream);
+    flex-shrink: 0;
+    font-style: italic;
+  }
+  .contact-info {}
+  .contact-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .contact-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    margin-bottom: 3px;
+  }
+  .contact-context {
+    font-size: 12.5px;
+    color: var(--ink-light);
+    font-style: italic;
+  }
+  /* QUOTE */
+  .quote-block {
+    border-left: 3px solid var(--rust);
+    padding-left: 16px;
+  }
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: var(--ink);
+  }
+  .quote-attr {
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  /* BOTTOM BAR */
+  .bottom-bar {
+    padding: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .bottom-bar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 1px;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tag:hover, .tag.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  /* AI REFRESH */
+  .refresh-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid var(--border-strong);
+    padding: 7px 16px;
+    cursor: pointer;
+    font-family: 'DM Mono', monospace;
+    font-size: 9.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-light);
+    border-radius: 1px;
+    transition: all 0.2s;
+  }
+  .refresh-btn:hover {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+  .refresh-icon {
+    font-size: 13px;
+    display: inline-block;
+    transition: transform 0.4s;
+  }
+  .refresh-btn:hover .refresh-icon { transform: rotate(180deg); }
+  /* PANEL OVERLAY */
+  .panel-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,23,20,0.5);
+    z-index: 100;
+    backdrop-filter: blur(2px);
+  }
+  .panel-overlay.open { display: block; }
+  .panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 420px;
+    background: var(--warm-white);
+    z-index: 101;
+    padding: 40px 36px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+    border-left: 1px solid var(--border);
+  }
+  .panel.open { transform: translateX(0); }
+  .panel-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    color: var(--ink-faint);
+    font-family: 'DM Mono', monospace;
+  }
+  .panel-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 20px;
+  }
+  .panel-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .panel-role {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--ink-faint);
+    letter-spacing: 0.1em;
+    margin-bottom: 24px;
+  }
+  .panel-section-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+    margin-top: 24px;
+  }
+  .panel-body {
+    font-size: 15px;
+    color: var(--ink-light);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .panel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 10px 18px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border-radius: 1px;
+    text-decoration: none;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: background 0.2s;
+  }
+  .panel-link:hover { background: var(--rust); }
+  /* LOADING STATE */
+  .loading-shimmer {
+    background: linear-gradient(90deg, var(--border) 25%, rgba(26,23,20,0.06) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 2px;
+    height: 14px;
+    margin-bottom: 8px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  /* ENTRY ANIMATIONS */
+  .fade-in {
+    animation: fadeUp 0.5s ease forwards;
+    opacity: 0;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in:nth-child(1) { animation-delay: 0.05s; }
+  .fade-in:nth-child(2) { animation-delay: 0.12s; }
+  .fade-in:nth-child(3) { animation-delay: 0.19s; }
+  .fade-in:nth-child(4) { animation-delay: 0.26s; }
+  .fade-in:nth-child(5) { animation-delay: 0.33s; }
+  @media (max-width: 768px) {
+    .main-grid { grid-template-columns: 1fr; }
+    .left-col { border-right: none; border-bottom: 1px solid var(--border); padding: 24px 0; }
+    .right-col { padding: 24px 0; }
+    .story-grid { grid-template-columns: 1fr; }
+    .panel { width: 100%; }
+    .context-bar { flex-wrap: wrap; gap: 12px; }
+  }
+</style>
+</head>
+<body>
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-date" id="mastheadDate"></div>
+  <div class="masthead-title">The Brief</div>
+  <p class="masthead-tagline">your morning signal. culture, business, and everything worth knowing.</p>
+</header>
+<!-- TICKER -->
+<div class="ticker-wrap" aria-label="Trending headlines" aria-live="off">
+  <div class="ticker-inner" id="tickerInner">
+    <span>Fashion Week Milan — Key looks emerging <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>Streaming wars heat up — new consolidation rumors <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>The resurgence of analog retail <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>Gen Z redefines brand loyalty <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>AI in creative direction — the new normal <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>Tourism economies shift post-pandemic <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span>Wellness culture reaches saturation point <span class="ticker-sep" aria-hidden="true">|</span></span>
+    <span aria-hidden="true">Fashion Week Milan — Key looks emerging <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">Streaming wars heat up — new consolidation rumors <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">The resurgence of analog retail <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">Gen Z redefines brand loyalty <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">AI in creative direction — the new normal <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">Tourism economies shift post-pandemic <span class="ticker-sep">|</span></span>
+    <span aria-hidden="true">Wellness culture reaches saturation point <span class="ticker-sep">|</span></span>
+  </div>
+</div>
+<!-- CONTEXT BAR -->
+<div class="container">
+  <div class="context-bar">
+    <div class="context-item"><strong id="ctxDay">Friday</strong> Morning</div>
+    <div class="context-item">Trend Index: <strong>Culture / Business / Society</strong></div>
+    <div class="context-item"><span class="mood-dot" aria-hidden="true"></span> Live</div>
+    <div class="context-item location-tag">Reading from <strong>North America</strong></div>
+  </div>
+</div>
+<!-- FILTERS -->
+<div class="container">
+  <nav aria-label="Filter stories by category">
+    <div class="bottom-bar" style="padding: 16px 0; border-bottom: 1px solid var(--border);">
+      <div class="bottom-bar-label">Focus</div>
+      <button class="tag active" onclick="filterTag(this,'all')">All</button>
+      <button class="tag" onclick="filterTag(this,'culture')">Culture</button>
+      <button class="tag" onclick="filterTag(this,'business')">Business</button>
+      <button class="tag" onclick="filterTag(this,'society')">Society</button>
+      <button class="tag" onclick="filterTag(this,'tech')">Tech &amp; Media</button>
+      <button class="refresh-btn" onclick="refreshBrief()"><span class="refresh-icon" aria-hidden="true">↻</span> Refresh Brief</button>
+    </div>
+  </nav>
+</div>
+<!-- MAIN -->
+<main>
+  <div class="container">
+    <div class="main-grid">
+      <!-- LEFT -->
+      <div class="left-col">
+        <!-- LEAD -->
+        <h2 class="section-label">Lead Signal</h2>
+        <article class="lead-story fade-in" id="leadStory">
+          <div class="lead-category">Culture / Retail</div>
+          <h3 class="lead-headline" onclick="openPanel('imran')">The Quiet Luxury Correction: Why Quiet Has Gone Loud Again</h3>
+          <p class="lead-deck">After two years of muted logos and understated dressing, the pendulum is swinging back. New data from runway analytics firms suggests maximalism is re-entering brand strategies, and the clients most resistant to the trend may be most vulnerable.</p>
+          <div class="lead-meta">
+            <span class="source">Business of Fashion</span>
+            <span>8 min read</span>
+            <button class="contact-pill" onclick="openPanel('imran')">Imran Amed, Editor</button>
+          </div>
+        </article>
+        <!-- STORY GRID -->
+        <h2 class="section-label">On the Radar</h2>
+        <div class="story-grid" id="storyGrid">
+          <article class="story-card fade-in">
+            <div class="story-cat cat-culture">Culture</div>
+            <h3 class="story-headline" onclick="openPanel('contact2')">Festivals Are Becoming Brand Incubators</h3>
+            <p class="story-body">Coachella, Primavera, SXSW — major festivals have quietly become the most effective soft-launch environments for new consumer brands targeting the 25-40 cohort.</p>
+            <div class="story-footer">
+              <span>The Atlantic</span>
+              <button class="contact-pill" onclick="openPanel('contact2')">Anne H., Writer</button>
+            </div>
+          </article>
+          <article class="story-card fade-in">
+            <div class="story-cat cat-business">Business</div>
+            <h3 class="story-headline">The New Patron Economy</h3>
+            <p class="story-body">Substack, Patreon, and the creator economy are quietly funneling significant revenue toward individual cultural curators. What does this mean for traditional agencies?</p>
+            <div class="story-footer">
+              <span>Fast Company</span>
+              <button class="contact-pill" onclick="openPanel('contact3')">M. Warzel, Writer</button>
+            </div>
+          </article>
+          <article class="story-card fade-in">
+            <div class="story-cat cat-society">Society</div>
+            <h3 class="story-headline">Immigration and the Creative Class</h3>
+            <p class="story-body">As border policies tighten globally, a new crop of creative entrepreneurs are structuring their lives — and their businesses — across two or more countries deliberately.</p>
+            <div class="story-footer">
+              <span>The Guardian</span>
+            </div>
+          </article>
+          <article class="story-card fade-in">
+            <div class="story-cat cat-tech">Tech &amp; Media</div>
+            <h3 class="story-headline" onclick="openPanel('contact4')">AI as Creative Director: Brands Experiment, Creatives Push Back</h3>
+            <p class="story-body">A growing number of mid-sized brands are deploying AI for visual direction. The creative industry is divided on whether this is democratization or homogenization.</p>
+            <div class="story-footer">
+              <span>Wired</span>
+              <button class="contact-pill" onclick="openPanel('contact4')">K. Lorenz, Author</button>
+            </div>
+          </article>
+        </div>
+        <!-- SIGNALS LIST -->
+        <h2 class="section-label">Quick Signals</h2>
+        <ol class="signal-section" id="signalSection">
+          <li class="signal-item fade-in">
+            <div class="signal-num" aria-hidden="true">1</div>
+            <div class="signal-content">
+              <h3 class="signal-title">The Return of the Physical Flagship</h3>
+              <p class="signal-blurb">Three DTC brands announced brick-and-mortar flagship stores this week. The anti-retail moment may be ending.</p>
+              <div class="signal-src">Retail Dive — 4 min read</div>
+            </div>
+          </li>
+          <li class="signal-item fade-in">
+            <div class="signal-num" aria-hidden="true">2</div>
+            <div class="signal-content">
+              <h3 class="signal-title">Slow Travel is Now a Market Category</h3>
+              <p class="signal-blurb">Booking platforms are introducing "slow travel" filters. Immersive, month-long stays are up 240% year-over-year.</p>
+              <div class="signal-src">Skift — 6 min read</div>
+            </div>
+          </li>
+          <li class="signal-item fade-in">
+            <div class="signal-num" aria-hidden="true">3</div>
+            <div class="signal-content">
+              <h3 class="signal-title">Women's Sports Sponsorship Is Booming</h3>
+              <p class="signal-blurb">Brand investment in women's sports is up 3x since 2022. Clients in adjacent spaces may be underestimating the opportunity.</p>
+              <div class="signal-src">SportsPro — 5 min read</div>
+            </div>
+          </li>
+          <li class="signal-item fade-in">
+            <div class="signal-num" aria-hidden="true">4</div>
+            <div class="signal-content">
+              <h3 class="signal-title">The Paradox of Brand Authenticity in 2025</h3>
+              <p class="signal-blurb">Consumers demand authenticity but also aspiration. New research shows brands that thread this needle are outperforming peers by 18% on repeat purchase.</p>
+              <div class="signal-src">HBR — 7 min read</div>
+            </div>
+          </li>
+        </ol>
+      </div>
+      <!-- RIGHT COL -->
+      <aside class="right-col">
+        <!-- CULTURAL TEMPERATURE -->
+        <section>
+          <h2 class="section-label">Cultural Temperature</h2>
+          <div class="temp-block">
+            <div class="temp-label">What's heating up this week</div>
+            <div class="temp-item">
+              <span class="temp-topic">Maximalism</span>
+              <div class="temp-bar-wrap">
+                <div class="temp-bar" role="meter" aria-valuenow="82" aria-valuemin="0" aria-valuemax="100" aria-label="Maximalism 82%"><div class="temp-fill" style="width:82%"></div></div>
+                <div class="temp-pct">82%</div>
+              </div>
+            </div>
+            <div class="temp-item">
+              <span class="temp-topic">Creator Economy</span>
+              <div class="temp-bar-wrap">
+                <div class="temp-bar" role="meter" aria-valuenow="74" aria-valuemin="0" aria-valuemax="100" aria-label="Creator Economy 74%"><div class="temp-fill" style="width:74%"></div></div>
+                <div class="temp-pct">74%</div>
+              </div>
+            </div>
+            <div class="temp-item">
+              <span class="temp-topic">Slow Travel</span>
+              <div class="temp-bar-wrap">
+                <div class="temp-bar" role="meter" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100" aria-label="Slow Travel 68%"><div class="temp-fill" style="width:68%"></div></div>
+                <div class="temp-pct">68%</div>
+              </div>
+            </div>
+            <div class="temp-item">
+              <span class="temp-topic">Physical Retail</span>
+              <div class="temp-bar-wrap">
+                <div class="temp-bar" role="meter" aria-valuenow="61" aria-valuemin="0" aria-valuemax="100" aria-label="Physical Retail 61%"><div class="temp-fill" style="width:61%"></div></div>
+                <div class="temp-pct">61%</div>
+              </div>
+            </div>
+            <div class="temp-item">
+              <span class="temp-topic">Women's Sports</span>
+              <div class="temp-bar-wrap">
+                <div class="temp-bar" role="meter" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100" aria-label="Women's Sports 89%"><div class="temp-fill" style="width:89%"></div></div>
+                <div class="temp-pct">89%</div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- CONTACTS -->
+        <section>
+          <h2 class="section-label">People Worth Knowing</h2>
+          <div class="contact-card" onclick="openPanel('imran')" role="button" tabindex="0">
+            <div class="contact-avatar" aria-hidden="true">IA</div>
+            <div class="contact-info">
+              <div class="contact-name">Imran Amed</div>
+              <div class="contact-role">Founder &amp; Editor — Business of Fashion</div>
+              <div class="contact-context">Cited in today's lead on quiet luxury trends</div>
+            </div>
+          </div>
+          <div class="contact-card" onclick="openPanel('contact2')" role="button" tabindex="0">
+            <div class="contact-avatar" aria-hidden="true">AH</div>
+            <div class="contact-info">
+              <div class="contact-name">Anne Helen Petersen</div>
+              <div class="contact-role">Journalist — The Atlantic / Culture Study</div>
+              <div class="contact-context">Author of the festival brand incubator piece</div>
+            </div>
+          </div>
+          <div class="contact-card" onclick="openPanel('contact3')" role="button" tabindex="0">
+            <div class="contact-avatar" aria-hidden="true">MW</div>
+            <div class="contact-info">
+              <div class="contact-name">Charlie Warzel</div>
+              <div class="contact-role">Staff Writer — The Atlantic</div>
+              <div class="contact-context">Writing on the patron economy and creator wealth</div>
+            </div>
+          </div>
+          <div class="contact-card" onclick="openPanel('contact4')" role="button" tabindex="0">
+            <div class="contact-avatar" aria-hidden="true">KL</div>
+            <div class="contact-info">
+              <div class="contact-name">Kate Knibbs</div>
+              <div class="contact-role">Senior Writer — Wired</div>
+              <div class="contact-context">Covering AI in creative direction</div>
+            </div>
+          </div>
+        </section>
+        <!-- QUOTE -->
+        <section>
+          <h2 class="section-label">Thought for the Morning</h2>
+          <blockquote class="quote-block">
+            <p class="quote-text">"The future belongs to those who learn, unlearn, and relearn. The illiterate of the 21st century will not be those who cannot read and write, but those who cannot learn, unlearn, and relearn."</p>
+            <footer class="quote-attr">Alvin Toffler</footer>
+          </blockquote>
+        </section>
+      </aside>
+    </div>
+  </div>
+</main>
+<!-- CONTACT PANEL -->
+<div class="panel-overlay" id="overlay" onclick="closePanel()"></div>
+<div class="panel" id="contactPanel" role="dialog" aria-modal="true" aria-labelledby="panelName">
+  <button class="panel-close" onclick="closePanel()" aria-label="Close panel">✕</button>
+  <div class="panel-label">Contact Opportunity</div>
+  <h2 class="panel-name" id="panelName">Name</h2>
+  <div class="panel-role" id="panelRole">Role</div>
+  <h3 class="panel-section-title">Why They're Relevant</h3>
+  <p class="panel-body" id="panelContext">Context</p>
+  <h3 class="panel-section-title">Reach Out</h3>
+  <p class="panel-body" id="panelReach">Suggested approach</p>
+  <a class="panel-link" id="panelLinkedIn" target="_blank" rel="noopener noreferrer">View on LinkedIn →</a>
+</div>
+<script>
+  // Set date
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('mastheadDate').textContent =
+    `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  document.getElementById('ctxDay').textContent = days[now.getDay()];
+  // Contact data
+  const contacts = {
+    imran: {
+      name: 'Imran Amed',
+      role: 'Founder & Editor-in-Chief — Business of Fashion',
+      context: 'Imran is the definitive voice on global fashion business. His network spans every major fashion house, brand consultancy, and luxury conglomerate. His publication sets the agenda for where the industry is going.',
+      reach: 'Best approached through BoF events or via editorial inquiry. He responds well to thoughtful perspectives on underrepresented markets and emerging cultural shifts. Has an active LinkedIn.',
+      linkedin: 'https://linkedin.com/in/imranamed'
+    },
+    contact2: {
+      name: 'Anne Helen Petersen',
+      role: 'Author & Journalist — The Atlantic / Culture Study',
+      context: 'AHP writes Culture Study, one of the most widely-read Substack publications on millennial cultural criticism. Her audience is highly engaged, educated, and exactly the demographic most brands are chasing.',
+      reach: 'She accepts pitches via email and is quite responsive on Substack. Strong affinity for stories about how institutions and brands are adapting to new cultural norms. Authentic approach is essential.',
+      linkedin: 'https://linkedin.com'
+    },
+    contact3: {
+      name: 'Charlie Warzel',
+      role: 'Staff Writer — The Atlantic',
+      context: 'Charlie covers media, technology, and cultural shifts with a sceptical, incisive voice. He regularly examines how new economic models (creator economy, remote work, etc.) are reshaping cultural production.',
+      reach: 'Most reachable via Twitter/X or press contact at The Atlantic. He values data-driven pitches and unusual angles. Prefers sources who are practitioners, not just observers.',
+      linkedin: 'https://linkedin.com'
+    },
+    contact4: {
+      name: 'Kate Knibbs',
+      role: 'Senior Writer — Wired',
+      context: 'Kate covers fashion, media, and technology intersections for Wired. Her AI-in-creativity work is shaping how the industry understands what tools like Midjourney and Sora mean for creative agencies.',
+      reach: 'Pitch via Wired editorial submissions. She is especially interested in voices from the creative industry itself — agencies and directors grappling with what AI means for their work and identity.',
+      linkedin: 'https://linkedin.com'
+    }
+  };
+  function openPanel(id) {
+    const c = contacts[id];
+    if (!c) return;
+    document.getElementById('panelName').textContent = c.name;
+    document.getElementById('panelRole').textContent = c.role;
+    document.getElementById('panelContext').textContent = c.context;
+    document.getElementById('panelReach').textContent = c.reach;
+    const link = document.getElementById('panelLinkedIn');
+    link.href = c.linkedin;
+    document.getElementById('overlay').classList.add('open');
+    const panel = document.getElementById('contactPanel');
+    panel.classList.add('open');
+    panel.focus();
+  }
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('open');
+    document.getElementById('contactPanel').classList.remove('open');
+  }
+  function filterTag(el, cat) {
+    document.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    // In production: filter visible stories by category
+  }
+  function refreshBrief() {
+    const btn = document.querySelector('.refresh-btn');
+    btn.innerHTML = '<span class="refresh-icon" aria-hidden="true">↻</span> Refreshing...';
+    setTimeout(() => {
+      btn.innerHTML = '<span class="refresh-icon" aria-hidden="true">↻</span> Refresh Brief';
+    }, 1800);
+    // In production: trigger AI fetch of fresh stories
+  }
+  // Keyboard support for contact cards
+  document.querySelectorAll('.contact-card').forEach(card => {
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+  // Close panel on Escape key
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closePanel();
+  });
+</script>
+</body>
+</html>
